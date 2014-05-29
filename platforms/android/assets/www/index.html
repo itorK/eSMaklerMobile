@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <link rel="stylesheet" href="css/jquery.mobile-1.1.2.min.css" />
+        <link rel="stylesheet" href="css/style.css?v=2">
+        <meta name="format-detection" content="telephone=no" />
+        -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+        <link rel="stylesheet" href="css/style.css">
+
+        <title>Prototyp czegoś</title>
+    </head>
+    <body>
+        <script type="text/x-handlebars" data-template-name="application">
+            <div class="container">
+            <div class="alert alert-danger"><h4>Prototyp czegoś</h4></div><h1 id="doc-count"></h1>
+            {{outlet}}
+            </div>
+        </script>
+        <script type="text/x-handlebars" data-template-name="menu">
+            <div class="navbar">
+            <div class="navbar-inner">
+            <ul class="nav">
+            {{#view App.NavView}}
+            {{#link-to "index"}}Home{{/link-to}}
+            {{/view}}
+            {{#view App.NavView}}
+            {{#link-to "papiery"}}Notowania{{/link-to}}
+            {{/view}}
+            {{#view App.NavView}}
+            {{#link-to "zlecenia"}}Zlecenia{{/link-to}}
+            {{/view}}
+            {{#view App.NavView}}
+            {{#link-to "parametry"}}Parametry{{/link-to}}
+            {{/view}}
+            </ul>
+            </div>
+            </div>
+            <div>
+            </div>
+        </script>
+        <script type="text/x-handlebars" data-template-name="zlecenia">
+
+            <button class="btn btn-success btn-sm" <a {{action "mBack" this}}>Powrot</a></button></td>
+            <ul class="nav nav-tabs">
+            {{#view App.NavView}}
+            <li ><a {{action 'mKasowe'}}>Kasowe</a></li>
+            <li><a {{action 'mDerywaty'}}>Derywaty</a></li>
+            {{/view}}
+            </ul>
+            {{#view App.NavView}}
+            <div class="btn-group">
+            <button type="button" class="btn btn-default">Wybierz papier</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            {{selected.skrot}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+            {{#each item in model}}
+            <li {{bind-attr class="isActive:active"}}><a {{action "select" item}}>{{item.skrot}}</a></li>
+            {{/each}}
+            </ul>
+
+            <li>
+            <div class="input-group">
+            <span class="input-group-addon">Ilość</span>
+            {{input type="text" class="form-control" valueBinding="ilosc" placeholder="Wpisz wartosc"}}
+            </div>
+            <div class="input-group">
+            <span class="input-group-addon">Limit ceny</span>
+            {{input type="text" class="form-control" valueBinding="limit" placeholder="Wpisz wartosc"}}
+            </div>
+            </li>
+            {{#if isKasowe}}
+            <div class='body'>{{body}}</div>
+            <button  class="btn btn-success btn-sm" {{action 'mZlecenieZlozA' item}}>Złóż zlecenie na akcje</button>
+            {{else}}
+            <div class='body'>{{body}}</div>
+            <button  class="btn btn-success btn-sm" {{action 'mZlecenieZlozK' item}}>Złóż zlecenie na kontraky</button>
+            {{/if}}
+            {{/view}}
+
+        </script>
+        <script type="text/x-handlebars" data-template-name="kasowe">
+            <ul class="nav">
+            <div class="col-xs-4 col-md-12">
+            {{#link-to 'papier' item.login}}{{item.login}}{{/link-to}}
+            </div>
+            </ul>
+            <button class="btn btn-success btn-sm"<a {{action "mAddPapier"}}>Dodaj zlecenie</a></button></td>
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="papiery">
+            <button class="btn btn-success btn-sm" <a {{action "mBack" this}}>Powrot</a></button></td>
+            {{#each item in model}}
+            <ul class="nav">
+            {{#view App.NavView}}
+            <div class="col-xs-4 col-md-12">
+            {{#link-to 'papier' item.login}}{{item.login}}{{/link-to}}
+            </div>
+            {{/view}}
+            </ul>
+            {{/each}}
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="papier">
+            <button class="btn btn-success btn-sm" <a {{action "mBack" this}}>Powrot</a></button></td>
+            {{#each towar in model}}
+            <p></p>
+            <span class="label label-default">komentarz</span>
+            <p> {{input class="form-control" type="text" placeholder="Komentarz" value=towar.komentarz }}  </p>
+            <span class="label label-default">LONG KOD PW</span>
+            <p> {{input class="form-control" type="text" placeholder="long_kod_pw" value=towar.long_kod_pw }} </p>
+            <span class="label label-default">KOD PW</span>
+            <p> {{input class="form-control" type="text" placeholder="kod_pw" value=towar.skrot }}  </p>
+            <span class="label label-default">Kurs</span>
+            <p> {{input class="form-control" type="text" placeholder="w_nominalna" value=towar.w_nominalna }}  </p>
+            <span class="label label-default">Typ papieru</span>
+            <p>  {{input class="form-control" type="text" placeholder="class" value=towar.typ_papieru }}  </p>
+
+            <button class="btn btn-success btn-sm"<a {{action "mPozFak" towar}}>Przegladaj Pozycje</a></button></td>
+            <button class="btn btn-success btn-sm" <a {{action "mEdit" towar}}>Edytuj</button></td>
+            <button class="btn btn-success btn-sm" <a {{action "mSkan" towar}}>Skanuj</button></td>
+            {{/each}}
+
+        </script>
+        <script type="text/x-handlebars" data-template-name="parametry/index">
+
+            {{#each item in model}}
+            <span class="label label-default">Nazwa parametru</span>
+            <p> {{input class="form-control" type="text" placeholder="Nazwa" value=item.nazwa }}  </p>
+            <span class="label label-default">Wartość parametru</span>
+            <p> {{input class="form-control" type="text" placeholder="Wartosc" value=item.wartosc }}  </p>
+
+
+            {{#view App.NavView}}
+            <div class="col-xs-4 col-md-12">
+            {{#link-to 'parametry.new'}}Dodaj Parametr{{/link-to}}
+            </div>
+
+            <button class="btn btn-success btn-sm" <a {{action "mEdit" item}}>Edytuj</a></button></td>
+            {{/view}}
+            {{/each}}
+        </script>
+        <script type="text/x-handlebars" data-template-name="parametry">
+            {{#if isNew}}
+            <span class="label label-default">Nazwa parametru</span>
+            <p> {{input class="form-control" type="text" placeholder="Nazwa" value=nazwa}}  </p>
+            <span class="label label-default">Wartość parametru</span>
+            <p> {{input class="form-control" type="text" placeholder="Wartosc"  value=wartosc }}  </p>
+            <button class="btn btn-success btn-sm" <a {{action "mSave" this}}>Zapisz</a></button></td>
+            <button class="btn btn-success btn-sm" <a {{action "mBack" this}}>Powrot</a></button></td>
+
+            {{else}}
+            <p> {{#link-to "menu"}}Powrot{{/link-to}}</p>
+            {{#each item in model}}
+            <span class="label label-default">Nazwa parametru</span>
+            <p> {{input class="form-control" type="text" placeholder="Nazwa" value=item.nazwa }}  </p>
+            <span class="label label-default">Wartość parametru</span>
+            <p> {{input class="form-control" type="text" placeholder="Wartosc" value=item.wartosc }}  </p>
+            {{#view App.NavView}}
+            <button class="btn btn-success btn-sm" <a {{action "mDodaj" item}}>Dodaj Parametr</a></button></td>
+            <button class="btn btn-success btn-sm" <a {{action "mEdit" item}}>Edytuj</a></button></td>
+            <button class="btn btn-success btn-sm" <a {{action "mDelete" item}}>Usuń</a></button></td>
+            <button class="btn btn-success btn-sm" <a {{action "mSkan" towar}}>Skanuj</button></td>
+            {{/view}}
+            {{/each}}
+            {{/if}}
+        </script>
+        <script type="text/x-handlebars" data-template-name="parametry/new">
+
+            <span class="label label-default">Nazwa parametru</span>
+            <p> {{input class="form-control" type="text" placeholder="Nazwa" value=nazwa}}  </p>
+            <span class="label label-default">Wartość parametru</span>
+            <p> {{input class="form-control" type="text" placeholder="Wartosc"  value=wartosc }}  </p>
+            <button class="btn btn-success btn-sm" <a {{action "mSave" this}}>Zapisz</a></button></td>
+            {{#link-to "parametry"}}Powrot{{/link-to}}
+
+        </script>
+        <script type="text/x-handlebars" data-template-name="global-loading">
+            <h2>Ładuje</h2>
+        </script>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script src="js/libs/1.4.0/jquery-1.10.2.js"></script>
+        <script src="js/libs/1.4.0/handlebars-1.1.2.js"></script>
+        <script src="js/libs/1.4.0/ember-1.4.0.js"></script>
+        <script src="js/libs/1.4.0/ember-data.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            phoneGapApp.initialize();
+        </script>
+    </body>
+</html>
